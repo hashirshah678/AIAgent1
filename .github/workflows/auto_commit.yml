@@ -1,0 +1,45 @@
+name: Auto Commit with Gemini AI Message
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"  # Runs every 10 minutes
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"  # Use an appropriate Node.js version
+
+      - name: Install Dependencies
+        run: |
+          npm install dotenv @google/generative-ai
+
+      - name: Generate Commit Message using Gemini AI
+        id: generate_message
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: |
+          # Run the Node.js script and capture the output as the commit message
+          MESSAGE=$(node generateCommitMessage.js)
+          echo "Gemini Generated Commit Message: $MESSAGE"
+          echo "::set-output name=message::$MESSAGE"
+
+      - name: Update File with Timestamp
+        run: |
+          # For demonstration, append a timestamp to a log file
+          echo "Commit at $(date)" >> auto_commit_log.txt
+          git add auto_commit_log.txt
+
+      - name: Commit Changes
+        run: |
+          git config --local user.email "your-email@example.com"
+          git config --local user.name "Your Name"
+          git commit -m "${{ steps.generate_message.outputs.message }}" || echo "No changes to commit"
+          git push
