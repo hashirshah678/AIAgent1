@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "16"  # Use an appropriate Node.js version
+          node-version: "v23.9.0"  # Use an appropriate Node.js version
 
       - name: Install Dependencies
         run: |
