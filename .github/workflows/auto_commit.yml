@@ -2,7 +2,7 @@ name: Auto Commit with Gemini AI Message
 
 on:
   schedule:
-    - cron: "*/10 * * * *"  # Runs every 10 minutes
+    - cron: "*/1 * * * *"  # Runs every 10 minutes
 
 jobs:
   auto-commit:
